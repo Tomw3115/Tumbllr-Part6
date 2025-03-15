@@ -17,6 +17,7 @@ void setup()
   Balanced.initLED();
   Serial.begin(9600);
 
+  Balanced.SetSpeed(15.0);
   Balanced.Stop(); 
   delay(5000); // pause to add payload to Tumbllr after balance is acheived
 
