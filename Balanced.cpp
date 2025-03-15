@@ -22,6 +22,7 @@ Adafruit_NeoPixel lights = Adafruit_NeoPixel(4, 3, NEO_GRB + NEO_KHZ800);
 // add boolean flag for motor status
 bool motor_busy = false;
 bool reverseFlag = false;
+float set_speed = 40; // set initial speed to same as Elegoo code
 
 void Balanced::initLED()
 {
@@ -240,7 +241,7 @@ void Balanced::LeftAngle(int angle)
   setBusy(true);
   int speed = 100;
   setting_car_speed = 0;
-  setting_turn_speed = +speed/2;
+  setting_turn_speed = +set_speed/2;
   // reset encoder wheel counts and calculate new counter turn limit 
   encoder_wheel_left = 0;
   encoder_wheel_right = 0;
@@ -255,7 +256,7 @@ void Balanced::RightAngle(int angle)
   setBusy(true);
   int speed = 100;
   setting_car_speed = 0;
-  setting_turn_speed = -speed/2;
+  setting_turn_speed = -set_speed/2;
   // reset encoder wheel counts and calculate new counter turn limit 
   encoder_wheel_left = 0;
   encoder_wheel_right = 0;
@@ -268,7 +269,7 @@ void Balanced::ForwardDist(float dist)
   while (getBusy()){delay(100);}
   delay(3000); // wait for 3 seconds after last controlled motion completed (for stability)
   setBusy(true);
-  setting_car_speed = 50;
+  setting_car_speed = set_speed;
   setting_turn_speed = 0;
   // reset encoder wheel counts and calculate new motion turn limit 
   encoder_wheel_left = 0;
@@ -283,7 +284,7 @@ void Balanced::ReverseDist(float dist)
   delay(3000); // wait for 3 seconds after last controlled motion completed (for stability)
   setBusy(true);
   reverseFlag = true;
-  setting_car_speed = 50;
+  setting_car_speed = set_speed;
   setting_turn_speed = 0;
   // reset encoder wheel counts and calculate new motion turn limit 
   encoder_wheel_left = 0;
@@ -343,4 +344,11 @@ float PID::computePID(float error)
     float out = _kp*error + _ki*_cum_error + _kd*rate_error;                //PID output               
     _last_error = error;    //remember current error           
     return out;   //have function return the PID output
+  }
+
+// add function to set speed value in inches per second
+void Balanced::SetSpeed(float speed)
+  {
+    set_speed = speed * GEAR_RATIO * ENCODER_PULSE_COUNT /(WHEEL_DIA * PI); // encoder pulses per second
+    set_speed /= 25; // divivde by sample rate per second
   }

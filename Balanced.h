@@ -40,7 +40,7 @@ class Balanced
           void setBusy(bool state);
           bool getBusy();
           void initLED();
-
+          void SetSpeed(float speed);
 
 /*Speed value*/
           double pwm_left;
@@ -77,6 +77,7 @@ class Balanced
           double rotation_control_output;
           int setting_turn_speed;
           int setting_car_speed;
+          float set_speed;
           
    private:
    #define ANGLE_MIN -27
